@@ -161,7 +161,7 @@ class SqliteBroker {
     self.close(db)
     
   }
-
+  
   // MARK: TESTING
   func testAttach() {
     
@@ -209,7 +209,7 @@ class SqliteBroker {
     var msql = "insert into f.test select a.id, a.name from test a left join f.test b on a.id=b.id  where b.id is NULL order by +a.rowid;"
     
     _ = self.sql(msql, db: db)
-
+    
     msql = "update f.test set name = (select name from test b where b.id=f.test.id and b.name != f.test.name) where id = (select id from test b where b.id=f.test.id and b.name != f.test.name);"
     
     _ = self.sql(msql, db: db)
@@ -243,7 +243,11 @@ class SqliteBroker {
     
     var statement: OpaquePointer?
     
-    if sqlite3_prepare_v2(db, "insert into blobtest (des,b) values (?,?)", -1, &statement, nil) != SQLITE_OK {
+    if sqlite3_prepare_v2(db,
+                          "insert into blobtest (des,b) values (?,?)", -1,
+                          &statement,
+                          nil) != SQLITE_OK {
+      
       let errmsg = String(cString: sqlite3_errmsg(db))
       print("error preparing insert: \(errmsg)")
     }
@@ -253,7 +257,11 @@ class SqliteBroker {
       print("failure binding foo: \(errmsg)")
     }
     
-    if sqlite3_bind_blob(statement, 2, (n as NSData).bytes, Int32(n.count), SQLITE_TRANSIENT) != SQLITE_OK {
+    if sqlite3_bind_blob(statement,
+                         2,
+                         (n as NSData).bytes,
+                         Int32(n.count),
+                         SQLITE_TRANSIENT) != SQLITE_OK {
       let errmsg = String(cString: sqlite3_errmsg(db))
       print("failure binding foo: \(errmsg)")
     }
@@ -479,7 +487,7 @@ class SqliteBroker {
       let errmsg = String(cString: sqlite3_errmsg(db))
       print("error preparing select: \(errmsg)")
     }
-
+    
     let cols = sqlite3_column_count(statement)
     
     var rows: [[String]]=[[]]
